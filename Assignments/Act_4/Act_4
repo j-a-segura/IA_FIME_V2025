@@ -1,0 +1,50 @@
+!wget https://raw.githubusercontent.com/FernandoV17/IA_VERANOS/refs/heads/act4/act4/data/data.csv
+#Si Clonaste el Respositorio
+data_path = '/content/IA_VERANOS/act4/data/data.csv'
+#Si nada mas usas google collab
+data_path = '/content/data.csv'
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import seaborn as sns
+from sklearn import tree
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.manifold import TSNE
+if 'Unnamed: 32' in df.columns:
+    df = df.drop(columns=['Unnamed: 32'])
+print("Cantidad Total de Datos",df.shape[0])
+print("Total number of features(as number of columns) are ",
+df.shape[1])
+df.describe()
+display(
+    df.head().style
+    .set_properties(**{'text-align': 'center'})
+    .format("{:.2f}", subset=df.select_dtypes(include=['float']).columns)
+)
+print("\nAnálisis de valores nulos en el dataset:")
+null_analysis = df.isnull().sum().to_frame('Conteo Nulos')
+display(null_analysis.style.set_caption("Conteo de valores nulos por columna"))
+
+key_columns = df.select_dtypes(include=['int', 'float']).columns.tolist()
+print("\nValores cero en columnas clave:")
+zero_analysis = df.select_dtypes(include=['int', 'float']).isin([0]).sum().to_frame('Conteo Ceros')
+display(zero_analysis.style.set_caption("Conteo de valores cero en columnas numéricas"))
+
+# Visualización
+plt.figure(figsize=(10, 6))
+sns.heatmap(df[key_columns].isin([0, np.nan]), cmap='viridis', cbar=False)
+plt.title("Mapa de calor de valores cero/nulos en columnas")
+plt.show()
+
+print("\nFilas con valores nulos o ceros problemáticos:")
+for col in key_columns:
+    zero_or_null = df[df[col].isin([0, np.nan])]
+    if not zero_or_null.empty:
+        print(f"\n--- {col} ---")
+        display(zero_or_null.head())
